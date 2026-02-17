@@ -7,25 +7,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Install Bubblewrap
-        run: npm install -g @bubblewrap/cli
-
-      - name: Build APK
+      - name: Build
         run: |
-          # دروستکردنی ئەپەکە بەبێ پرسیارکردن
+          npm install -g @bubblewrap/cli
           bubblewrap init --manifest=manifest.json --no-prompt || true
           bubblewrap build --no-prompt --skipFirstRunCheck
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: Dentist-App
           path: ./*.apk
