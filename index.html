@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>سیستەمی د. هدی ٢٠٢٦</title>
+    <title>Dentist System</title>
+    
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3467/3467546.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3467/3467546.png">
+    <link rel="manifest" href="manifest.json">
+
     <style>
         @font-face { font-family: 'Speda'; src: local('Speda Bold'), sans-serif; }
         :root { --main: #1a237e; --bg: #f0f2f5; --q1: #e63946; --q2: #457b9d; --q3: #8338ec; --q4: #2a9d8f; }
         * { font-family: 'Speda', Tahoma, sans-serif !important; font-weight: bold !important; box-sizing: border-box; }
         body { background: var(--bg); margin: 0; padding: 8px; color: #1a237e; }
         .container { background: white; padding: 12px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
-        header h2 { color: var(--main); text-align: center; border-bottom: 3px solid var(--main); padding-bottom: 8px; margin-bottom: 15px; font-size: 20px; }
+        header { text-align: center; margin-bottom: 15px; }
+        header img { width: 50px; height: 50px; margin-bottom: 5px; }
+        header h2 { color: var(--main); margin: 0; border-bottom: 3px solid var(--main); padding-bottom: 8px; font-size: 20px; }
         
         .input-row { display: flex; gap: 4px; margin-bottom: 12px; align-items: center; }
         #name { flex: 2; padding: 10px 5px; border: 2px solid #ddd; border-radius: 8px; font-size: 13px; }
@@ -60,21 +67,28 @@
 <body>
 
 <div class="container">
-    <header><h2>د. هدی علی مولود</h2></header>
+    <header>
+        <img src="https://cdn-icons-png.flaticon.com/512/3467/3467546.png" alt="Dentist Logo">
+        <h2>سیستەمی د. هدی - Dentist</h2>
+    </header>
+    
     <form id="pForm">
         <div class="input-row">
             <input type="text" id="name" placeholder="ناوی چارەخواز" required>
             <div class="age-box" id="ageScroll"></div>
             <input type="number" id="phone" placeholder="ژ. مۆبایل" required>
         </div>
+        
         <div class="treatment-grid" id="workGrid"></div>
+        
         <div id="teeth-section" class="teeth-container">
             <h4 id="workTitle" style="text-align:center; margin:0; font-size:14px; color:var(--main);"></h4>
             <div id="teethLayout"></div>
         </div>
         
-        <button type="submit" class="btn save-btn">💾 تۆمارکردن</button>
+        <button type="submit" class="btn save-btn">💾 تۆمارکردنی داتا</button>
         <button type="button" class="btn report-btn" onclick="openReport()">📊 ڕاپۆرتەکان</button>
+        
         <input type="text" id="searchBox" oninput="doSearch()" placeholder="🔎 گەڕان بەپێی ناو یان مۆبایل..." style="width:100%; padding:12px; margin-top:12px; border-radius:10px; border:2px solid var(--main);">
         <div id="searchRes"></div>
     </form>
@@ -97,15 +111,24 @@
 
     <input type="file" id="restoreFile" style="display:none" onchange="restoreData(event)">
 
-    <div id="dayPanel" class="sub-panel"><input type="date" id="calDate" onchange="loadDayStat()" style="width:100%; padding:10px; margin-bottom:10px;"><div id="dayRes"></div></div>
+    <div id="dayPanel" class="sub-panel">
+        <input type="date" id="calDate" onchange="loadDayStat()" style="width:100%; padding:10px; margin-bottom:10px;">
+        <div id="dayRes"></div>
+    </div>
     <div id="weekPanel" class="sub-panel"><div id="weekRes"></div></div>
-    <div id="monthPanel" class="sub-panel"><select id="mSel" onchange="loadMonthStat()" style="width:100%; padding:10px; margin-bottom:10px;"></select><div id="monthRes"></div></div>
-    <div id="yearPanel" class="sub-panel"><select id="ySel" onchange="loadYearStat()" style="width:100%; padding:10px; margin-bottom:10px;"></select><div id="yearRes"></div></div>
+    <div id="monthPanel" class="sub-panel">
+        <select id="mSel" onchange="loadMonthStat()" style="width:100%; padding:10px; margin-bottom:10px;"></select>
+        <div id="monthRes"></div>
+    </div>
+    <div id="yearPanel" class="sub-panel">
+        <select id="ySel" onchange="loadYearStat()" style="width:100%; padding:10px; margin-bottom:10px;"></select>
+        <div id="yearRes"></div>
+    </div>
 </div>
 
 <script>
-    // --- IndexedDB Configuration ---
-    const DB_NAME = 'HudaDentalDB_2026';
+    // --- IndexedDB ---
+    const DB_NAME = 'DentistDB_2026';
     const DB_VERSION = 1;
     const STORE_NAME = 'patients';
     const TELEGRAM_TOKEN = '8309811464:AAFlm5y6r9CpfclT20BygRdQizwTugtYSyk';
@@ -128,11 +151,13 @@
     };
 
     function init() {
+        // تەمەن
         const ageBox = document.getElementById('ageScroll');
         ageBox.innerHTML = "";
         for(let i=1; i<=99; i++) ageBox.innerHTML += `<div class="age-num">${i}</div>`;
         setTimeout(() => ageBox.scrollTop = 24 * 40, 100);
 
+        // جۆرەکانی ئیش
         const works = ["پشکنین", "شۆردن", "کیف", "پڕکردنەوە", "کێشان", "دەمار بڕین"];
         const grid = document.getElementById('workGrid');
         grid.innerHTML = "";
@@ -158,12 +183,13 @@
             grid.appendChild(div);
         });
 
+        // مانگ و ساڵ
         const mSel = document.getElementById('mSel');
         for(let m=0; m<12; m++) mSel.innerHTML += `<option value="${m}">مانگی ${m+1}</option>`;
         mSel.value = new Date().getMonth();
 
         const ySel = document.getElementById('ySel');
-        for(let y=2026; y<=2050; y++) ySel.innerHTML += `<option value="${y}">ساڵی ${y}</option>`;
+        for(let y=2026; y<=2035; y++) ySel.innerHTML += `<option value="${y}">ساڵی ${y}</option>`;
         ySel.value = new Date().getFullYear();
     }
 
@@ -210,12 +236,10 @@
         updateButtonStatus();
     }
 
-    // --- DB Operations ---
     async function getAllData() {
         return new Promise((resolve) => {
             const tx = db.transaction(STORE_NAME, 'readonly');
-            const store = tx.objectStore(STORE_NAME);
-            const req = store.getAll();
+            const req = tx.objectStore(STORE_NAME).getAll();
             req.onsuccess = () => resolve(req.result);
         });
     }
@@ -246,7 +270,7 @@
     function renderPatient(p) {
         let h = `<div class="res-card">
             <div class="res-header"><span>👤 ${p.name}</span><span style="color:#d32f2f">📞 ${p.phone}</span></div>
-            <div class="res-sub"><span>🎂 تەمەن: ${p.age}</span><span>📅 ${p.date}</span><span>⏰ کات: ${p.time}</span></div>`;
+            <div class="res-sub"><span>🎂 تەمەن: ${p.age}</span><span>📅 ${p.date}</span></div>`;
         p.works.forEach(w => {
             h += `<div class="work-box"><span class="work-title">${w.type}</span>`;
             h += (w.type!=="پشکنین"&&w.type!=="شۆردن") ? drawTeeth('view', w.teeth) : "<b>(گشتی)</b>";
@@ -260,7 +284,7 @@
         if(!confirm("دڵنیای لە سڕینەوە؟")) return;
         const tx = db.transaction(STORE_NAME, 'readwrite');
         tx.objectStore(STORE_NAME).delete(ts);
-        tx.oncomplete = () => { alert("سڕایەوە"); location.reload(); };
+        tx.oncomplete = () => location.reload();
     }
 
     async function doSearch() {
@@ -268,7 +292,8 @@
         let res = document.getElementById('searchRes'); res.innerHTML = "";
         if(!q) return;
         const list = await getAllData();
-        list.filter(p=>p.name.toLowerCase().includes(q)||p.phone.includes(q)).reverse().forEach(p=> res.innerHTML += renderPatient(p));
+        list.filter(p=>p.name.toLowerCase().includes(q) || p.phone.includes(q))
+            .reverse().forEach(p=> res.innerHTML += renderPatient(p));
     }
 
     function showPanel(id) {
@@ -282,7 +307,7 @@
     async function loadDayStat() {
         let d = document.getElementById('calDate').value;
         const list = await getAllData();
-        document.getElementById('dayRes').innerHTML = list.filter(p=>p.date===d).map(p=>renderPatient(p)).join('') || "<p style='text-align:center;'>داتا نییە</p>";
+        document.getElementById('dayRes').innerHTML = list.filter(p=>p.date===d).map(p=>renderPatient(p)).join('') || "<p style='color:red; text-align:center;'>هیچ داتایەک بۆ ئەم ڕۆژە نییە</p>";
     }
 
     function generateTable(list) {
@@ -305,10 +330,10 @@
         const blob = new Blob([JSON.stringify(list)], { type: 'application/json' });
         const formData = new FormData();
         formData.append('chat_id', TELEGRAM_CHAT_ID);
-        formData.append('document', blob, `Huda_Dental_Backup.json`);
+        formData.append('document', blob, `Dentist_Backup.json`);
         try {
             const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendDocument`, { method: 'POST', body: formData });
-            if(res.ok) alert("✅ باکئەپ نێردرا");
+            if(res.ok) alert("✅ باکئەپ بۆ تێلیگرام ناردرا");
         } catch(e) { alert("کێشەی ئینتەرنێت هەیە"); }
     }
 
@@ -320,7 +345,7 @@
                 const tx = db.transaction(STORE_NAME, 'readwrite');
                 const store = tx.objectStore(STORE_NAME);
                 list.forEach(item => store.put(item));
-                tx.oncomplete = () => { alert("✅ داتاکان گەڕانەوە"); location.reload(); };
+                tx.oncomplete = () => { alert("✅ داتاکان بە سەرکەوتوویی گەڕانەوە"); location.reload(); };
             } catch(err) { alert("فایلەکە هەڵەیە"); }
         };
         reader.readAsText(event.target.files[0]);
