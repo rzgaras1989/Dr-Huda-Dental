@@ -1,0 +1,31 @@
+name: Build Dentist APK
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Bubblewrap
+        run: npm install -g @bubblewrap/cli
+
+      - name: Build APK
+        run: |
+          # دروستکردنی ڕێکخستنی ئەپەکە بە ناوی Dentist
+          bubblewrap init --manifest=manifest.json --no-prompt
+          bubblewrap build --no-prompt
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: Dentist-App
+          path: ./*.apk
