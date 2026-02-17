@@ -1,13 +1,13 @@
 {
-  "name": "Huda Dental System",
-  "short_name": "Dr.Huda",
+  "name": "Dentist System",
+  "short_name": "Dentist",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#1a237e",
   "theme_color": "#1a237e",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/3467/3467546.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
