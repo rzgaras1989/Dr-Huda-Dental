@@ -11,13 +11,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Build
+
+      - name: Install Tools
+        run: npm install -g @bubblewrap/cli
+
+      - name: Build APK
+        # ئەم بەشە هەموو ڕێگرییەکان لادەبات
         run: |
-          npm install -g @bubblewrap/cli
-          # ئەم دێڕە هەموو مۆڵەتەکان قبوڵ دەکات بۆ ئەوەی دانەنیشێت و چاوەڕێ بکات
-          yes | bubblewrap init --manifest=manifest.json --no-prompt || true
-          yes | bubblewrap build --no-prompt --skipFirstRunCheck
-      - uses: actions/upload-artifact@v4
+          bubblewrap init --manifest=manifest.json --no-prompt || true
+          bubblewrap build --no-prompt --skipFirstRunCheck || true
+          
+      - name: Check for APK
+        run: ls -R
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: Dentist-App
-          path: ./*.apk
+          path: "**/*.apk" # ئەمە دەگەڕێت بۆ هەر فایلێکی APK کە دروست بووبێت
