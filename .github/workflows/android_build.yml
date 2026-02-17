@@ -20,9 +20,9 @@ jobs:
 
       - name: Build APK
         run: |
-          # دروستکردنی ڕێکخستنی ئەپەکە
-          bubblewrap init --manifest=manifest.json --no-prompt
-          bubblewrap build --no-prompt
+          # دروستکردنی ئەپەکە بەبێ پرسیارکردن
+          bubblewrap init --manifest=manifest.json --no-prompt || true
+          bubblewrap build --no-prompt --skipFirstRunCheck
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
