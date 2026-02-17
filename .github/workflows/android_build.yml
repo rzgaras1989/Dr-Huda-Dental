@@ -16,16 +16,20 @@ jobs:
         run: npm install -g @bubblewrap/cli
 
       - name: Build APK
-        # ئەم بەشە هەموو ڕێگرییەکان لادەبات
+        # لێرەدا فەرمانی دروستکردنی کلیل و ئیمزاکردنی بۆ زیاد دەکەین تا فایلەکە دروست بێت
         run: |
-          bubblewrap init --manifest=manifest.json --no-prompt || true
-          bubblewrap build --no-prompt --skipFirstRunCheck || true
+          yes | bubblewrap init --manifest=manifest.json --no-prompt || true
+          yes | bubblewrap build --no-prompt --skipFirstRunCheck || true
           
-      - name: Check for APK
-        run: ls -R
+      - name: Find and Move APK
+        # ئەم دێڕە فایلەکە دەدۆزێتەوە و دەیهێنێتە بەردەست
+        run: |
+          find . -name "*.apk" -exec cp {} . \;
+          ls *.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Dentist-App
-          path: "**/*.apk" # ئەمە دەگەڕێت بۆ هەر فایلێکی APK کە دروست بووبێت
+          path: ./*.apk
+          if-no-files-found: error
